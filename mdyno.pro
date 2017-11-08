@@ -16,7 +16,6 @@ FORMS    += modelingdynamicobject.ui
 HEADERS += \
     common.h \
     dynamicdron.h \
-    dynamicobjmngr.h \
     dynamicship.h \
     idynamicobject.h \
     modelingdynamicobject.h \
@@ -27,11 +26,11 @@ HEADERS += \
     vpaintpolygon.h \
     vroute.h \
     vroutedron.h \
-    vrouteship.h
+    vrouteship.h \
+    dynamicobjectmanager.h
 
 SOURCES += \
     dynamicdron.cpp \
-    dynamicobjmngr.cpp \
     dynamicship.cpp \
     idynamicobject.cpp \
     main.cpp \
@@ -43,4 +42,5 @@ SOURCES += \
     vpaintpolygon.cpp \
     vroute.cpp \
     vroutedron.cpp \
-    vrouteship.cpp
+    vrouteship.cpp \
+    dynamicobjectmanager.cpp

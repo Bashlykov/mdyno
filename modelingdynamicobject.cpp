@@ -11,7 +11,7 @@ ModelingDynamicObject::ModelingDynamicObject(QWidget *parent) :
 
     ui->graphicsView->setScene(scene);
 
-    mapObjectMngr = new DynamicObjMngr(ui);
+    mapObjectMngr = new DynamicObjectManager(ui);
     mapObjectMngr->setGraphicsView(ui->graphicsView);
     mapObjectMngr->setVScene(scene);
     mapObjectMngr->setTimer(&timer);

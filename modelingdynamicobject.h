@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 
-#include <dynamicobjmngr.h>
+#include <dynamicobjectmanager.h>
 #include <vpaintpoint.h>
 #include <vpaintline.h>
 #include <vpaintpolygon.h>
@@ -24,7 +24,7 @@ public:
 private:
     Ui::ModelingDynamicObject *ui;
     QGraphicsScene *scene;
-    DynamicObjMngr *mapObjectMngr;
+    DynamicObjectManager *mapObjectMngr;
     QTimer timer;
 };
 

@@ -1,5 +1,5 @@
-#ifndef DYNAMICOBJMNGR_H
-#define DYNAMICOBJMNGR_H
+#ifndef DYNAMICOBJECTMANAGER_H
+#define DYNAMICOBJECTMANAGER_H
 
 #include <QGraphicsView>
 
@@ -10,7 +10,7 @@
 #include <dynamicdron.h>
 #include <varea.h>
 
-class DynamicObjMngr: public QObject
+class DynamicObjectManager: public QObject
 {
     Q_OBJECT
 
@@ -42,8 +42,8 @@ protected:
        bool eventFilter(QObject *, QEvent *event) override;
 
 public:
-    DynamicObjMngr(Ui::ModelingDynamicObject *ui);
-    ~DynamicObjMngr();
+    DynamicObjectManager(Ui::ModelingDynamicObject *ui);
+    ~DynamicObjectManager();
     void setGraphicsView(QGraphicsView *graphView);
     void setVScene(QGraphicsScene* scene);
     void createShip();
@@ -73,4 +73,4 @@ public slots:
 
 };
 
-#endif // DYNAMICOBJMNGR_H
+#endif // DYNAMICOBJECTMANAGER_H

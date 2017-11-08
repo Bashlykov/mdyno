@@ -1,6 +1,6 @@
-#include "dynamicobjmngr.h"
+#include "dynamicobjectmanager.h"
 
-DynamicObjMngr::DynamicObjMngr(Ui::ModelingDynamicObject *ui):
+DynamicObjectManager::DynamicObjectManager(Ui::ModelingDynamicObject *ui):
 
     ui(ui),
     listShip(new QList<DynamicShip*>),
@@ -30,7 +30,7 @@ DynamicObjMngr::DynamicObjMngr(Ui::ModelingDynamicObject *ui):
 
 }
 
-DynamicObjMngr::~DynamicObjMngr()
+DynamicObjectManager::~DynamicObjectManager()
 {
     listShip->clear();
     listVArea->clear();
@@ -40,12 +40,12 @@ DynamicObjMngr::~DynamicObjMngr()
     delete ui;
 }
 
-void DynamicObjMngr::setCurrentIndexArea(int i)
+void DynamicObjectManager::setCurrentIndexArea(int i)
 {
     this->indexArea = i;
 }
 
-bool DynamicObjMngr::eventFilter(QObject *, QEvent *event)
+bool DynamicObjectManager::eventFilter(QObject *, QEvent *event)
 {
     if(event->type() == QEvent::GraphicsSceneMousePress)
     {
@@ -110,17 +110,17 @@ bool DynamicObjMngr::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
-void DynamicObjMngr::setGraphicsView(QGraphicsView *graphView)
+void DynamicObjectManager::setGraphicsView(QGraphicsView *graphView)
 {
     this->graphView = graphView;
 }
 
-void DynamicObjMngr::setTimer(QTimer *t)
+void DynamicObjectManager::setTimer(QTimer *t)
 {
     this->timer = t;
 }
 
-void DynamicObjMngr::startModeling()
+void DynamicObjectManager::startModeling()
 {
     if (f_startModeling)
         goto timer_start;
@@ -145,7 +145,7 @@ timer_start:
 
 }
 
-void DynamicObjMngr::stopModeling()
+void DynamicObjectManager::stopModeling()
 {
     if ( dynamic_cast<QPushButton*>(sender()) == ui->stopButton )
     {
@@ -174,7 +174,7 @@ stop_timer:
     f_startModeling = false;
 }
 
-void DynamicObjMngr::pauseModeling()
+void DynamicObjectManager::pauseModeling()
 {
     for (DynamicShip *ship: *reinterpret_cast<QList<DynamicShip*>*>(listShip) )
     {
@@ -188,23 +188,23 @@ void DynamicObjMngr::pauseModeling()
     timer->stop();
 }
 
-void DynamicObjMngr::fastSpeedModeling()
+void DynamicObjectManager::fastSpeedModeling()
 {
     timer->setInterval(timer->interval()/2);
 }
 
-void DynamicObjMngr::slowSpeedModeling()
+void DynamicObjectManager::slowSpeedModeling()
 {
     timer->setInterval(timer->interval()*2);
 }
 
-void DynamicObjMngr::setVScene(QGraphicsScene* scene)
+void DynamicObjectManager::setVScene(QGraphicsScene* scene)
 {
     this->scene = scene;
     this->scene->installEventFilter(this);
 }
 
-void DynamicObjMngr::createShip()
+void DynamicObjectManager::createShip()
 {
     qsrand(QTime::currentTime().msec());
     UIDType uid = (qrand() % 90000 + 10000);
@@ -229,12 +229,12 @@ void DynamicObjMngr::createShip()
     countShip++;
 }
 
-void DynamicObjMngr::setCurrentShip(IDynamicObject* ship)
+void DynamicObjectManager::setCurrentShip(IDynamicObject* ship)
 {
     currentShip = dynamic_cast<DynamicShip*>(ship);
 }
 
-void DynamicObjMngr::createOilDerrick()
+void DynamicObjectManager::createOilDerrick()
 {
     QVector<QPointF> *points = new QVector<QPointF>;
     *points  << QPointF(-15, -15)
@@ -248,7 +248,7 @@ void DynamicObjMngr::createOilDerrick()
     oilDerrick->setPos(0.0f,0.0f);
 }
 
-void DynamicObjMngr::setCurrentIndexObject(int index)
+void DynamicObjectManager::setCurrentIndexObject(int index)
 {
     ui->objComboBox->setCurrentIndex(index);
     switch ( static_cast<TypeObject>(index) )
@@ -268,7 +268,7 @@ void DynamicObjMngr::setCurrentIndexObject(int index)
     }
 }
 
-void DynamicObjMngr::addObjectToMap()
+void DynamicObjectManager::addObjectToMap()
 {
     switch ( object_select )
     {
@@ -301,7 +301,7 @@ void DynamicObjMngr::addObjectToMap()
     }
 }
 
-void DynamicObjMngr::enableEditRoute()
+void DynamicObjectManager::enableEditRoute()
 {
     f_enableEditRouteShip = true;
     f_enableEditArea = false;
@@ -310,7 +310,7 @@ void DynamicObjMngr::enableEditRoute()
 
 //Работа с районами
 
-VArea *DynamicObjMngr::createVArea()
+VArea *DynamicObjectManager::createVArea()
 {
     VArea *varea = new VArea;
     qsrand(QTime::currentTime().msec());
@@ -326,18 +326,18 @@ VArea *DynamicObjMngr::createVArea()
     return varea;
 }
 
-void DynamicObjMngr::enableEditArea()
+void DynamicObjectManager::enableEditArea()
 {
     f_enableEditArea = true;
     f_enableEditRouteShip = false;
 }
 
-void DynamicObjMngr::disableEditArea()
+void DynamicObjectManager::disableEditArea()
 {
     f_enableEditArea = false;
 }
 
-QList<VArea *> *DynamicObjMngr::getListVArea()
+QList<VArea *> *DynamicObjectManager::getListVArea()
 {
     return listVArea;
 }
