@@ -32,13 +32,12 @@ public:
 
     VPointPaintArray *getPaintPoints();
     QVector<QPointF> *getPoints();
-    void setPaintPoints(VPaintPoint *point, double speed);
-    void createFromNet(QVector<QPointF> *pointsRouteDron, UIDType uid = 0);
+    void setPaintPoints(VPaintPoint *point);
+    void createFromNet(QVector<QPointF> *pointsRouteDron, UIDType = 0);
     void remove();
     VPaintMultiLine *getLine(){return nullptr;}
     void addPointFromCursor(QPointF &){}
 
-    void setSpeed(float){}
     void setUID(UIDType ){}
     UIDType getUID(){return 0;}
 
@@ -50,6 +49,7 @@ public slots:
     void setDefaultColor(){}
     void setNumPointClick(int){}
     void set(QPointF){}
+    void deletePoint(int){}
 
 private slots:
     void finish();   

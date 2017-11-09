@@ -23,7 +23,7 @@ class DynamicObjectManager: public QObject
     QTimer *timer;
     bool f_createdShip;    
     bool f_startModeling;
-    int indexArea;
+    int index_area;
 
     uint countShip;
 

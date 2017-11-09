@@ -1,13 +1,12 @@
 #include "varea.h"
 
 VArea::VArea():
-    pointsArea( new QVector<QPointF> ),
-    pointsPaintArea( new VPointPaintArray ),
-    polyArea( new VPaintPolygon ),
+    points( new QVector<QPointF> ),
+    paintPoints( new VPointPaintArray ),
+    paintPoly( new VPaintPolygon ),
     listThisObjects(nullptr),
-    f_createPolyArea( false ),
-    f_linesArea( false ),
-    f_enableEditAreaRoute( false )
+    f_create_poly( false ),
+    f_lines( false )
 {
     propertyAction  = menu.addAction("Свойства");
     addPointAction = menu.addAction("Добавить точку");
@@ -22,17 +21,17 @@ VArea::VArea():
 
 VArea::~VArea()
 {
-    pointsArea->clear();
-    pointsPaintArea->clear();
-    delete pointsArea;
-    delete pointsPaintArea;
-    delete polyArea;
+    points->clear();
+    paintPoints->clear();
+    delete points;
+    delete paintPoints;
+    delete paintPoly;
 }
 
 void VArea::setPointPaint(VPaintPoint *point)
 {
-    pointsPaintArea->append(point);
-    pointsArea->append( QPointF(point->x(), point->y()) );
+    paintPoints->append(point);
+    points->append( QPointF(point->x(), point->y()) );
 }
 
 void VArea::createPoint(QPointF &p)
@@ -41,47 +40,63 @@ void VArea::createPoint(QPointF &p)
                                             true, 
                                             Qt::black, 
                                             Qt::black,  
-                                            pointsPaintArea->size());
+                                            paintPoints->size());
 
     newPoint->setPos(p);
 
     vScene->addItem(newPoint);
-    pointsPaintArea->append(newPoint);
-    pointsArea->append(newPoint->pos());
+    paintPoints->append(newPoint);
+    points->append(newPoint->pos());
 
     connect(newPoint, SIGNAL(setNewPos(QPointF)), this, SLOT(setPoly(QPointF)));
+    connect(newPoint, SIGNAL(deletingThis(int)), this, SLOT(deletePoint(int)));
 
     emit createPointAreaSig(newPoint);
 
-    if ( pointsArea->size() > 1 )
+    if ( points->size() > 1 )
     {
         setPoly(p);
     }
 }
 
+void VArea::deletePoint(int num)
+{
+    for(int i=0; i<paintPoints->size(); i++)
+    {
+        if (paintPoints->at(i)->getNum() == num)
+        {
+            vScene->removeItem(paintPoints->at(i));
+            paintPoints->removeAll(paintPoints->at(i));
+            points->removeAt(i);
+            setPoly(QPointF());
+        }
+    }
+
+}
+
 QVector<QPointF> *VArea::getPoints()
 {
-    return this->pointsArea;
+    return this->points;
 }
 
 void VArea::removePoly()
 {
-    if ( f_createPolyArea )
+    if ( f_create_poly )
     {
-        for( int i = 0; i < pointsPaintArea->size(); i++ )
+        for( int i = 0; i < paintPoints->size(); i++ )
         {
-            if (vScene->items().contains(pointsPaintArea->at(i)))
+            if (vScene->items().contains(paintPoints->at(i)))
             {
-                vScene->removeItem(pointsPaintArea->at(i));
+                vScene->removeItem(paintPoints->at(i));
             }
         }
-        if (vScene->items().contains(polyArea))
+        if (vScene->items().contains(paintPoly))
         {
-            vScene->removeItem(polyArea);
+            vScene->removeItem(paintPoly);
         }
-        pointsPaintArea->clear();
-        pointsArea->clear();
-        f_createPolyArea = false;
+        paintPoints->clear();
+        points->clear();
+        f_create_poly = false;
     }
 }
 
@@ -93,7 +108,7 @@ void VArea::removeThis()
 
 VPointPaintArray *VArea::getPointsPaint()
 {
-    return this->pointsPaintArea;
+    return this->paintPoints;
 }
 
 void VArea::setPolygon(QPolygonF *poly)
@@ -103,64 +118,64 @@ void VArea::setPolygon(QPolygonF *poly)
 
 void VArea::setPoly(QPointF)
 {
-    pointsArea->clear();
+    points->clear();
 
-    for( int i = 0; i < pointsPaintArea->size(); i++ )
+    for( int i = 0; i < paintPoints->size(); i++ )
     {
-        pointsArea->append(pointsPaintArea->at(i)->pos());
+        points->append(paintPoints->at(i)->pos());
     }
 
-    if ( pointsArea->size() > 1 )
+    if ( points->size() > 1 )
     {
-        if ( pointsArea->size() == 2 )
+        if ( points->size() == 2 )
         {
-            if ( f_createPolyArea )
+            if ( f_create_poly )
             {
-                if (vScene->items().contains(polyArea))
+                if (vScene->items().contains(paintPoly))
                 {
-                    vScene->removeItem(polyArea);
+                    vScene->removeItem(paintPoly);
                 }
             }
-            if ( f_linesArea )
+            if ( f_lines )
             {
-                if (vScene->items().contains(linesArea))
+                if (vScene->items().contains(paintLines))
                 {
-                    vScene->removeItem(linesArea);
+                    vScene->removeItem(paintLines);
                 }
             }
-            linesArea = new VPaintMultiLine(pointsArea,
+            paintLines = new VPaintMultiLine(points,
                                             new QBrush(Qt::black),
                                             3,
                                             Qt::DashLine);
 
-            vScene->addItem(linesArea);
-            f_linesArea = true;
+            vScene->addItem(paintLines);
+            f_lines = true;
         }
 
-        if ( pointsArea->size() > 2 )
+        if ( points->size() > 2 )
         {
-            if ( f_linesArea )
+            if ( f_lines )
             {
-                if (vScene->items().contains(linesArea))
+                if (vScene->items().contains(paintLines))
                 {
-                    vScene->removeItem(linesArea);
+                    vScene->removeItem(paintLines);
                 }
             }
 
-            if ( f_createPolyArea )
+            if ( f_create_poly )
             {
-                if (vScene->items().contains(polyArea))
+                if (vScene->items().contains(paintPoly))
                 {
-                    vScene->removeItem(polyArea);
+                    vScene->removeItem(paintPoly);
                 }
             }
 
-            polyArea = new VPaintPolygon(pointsArea,
+            paintPoly = new VPaintPolygon(points,
                                          new QColor(Qt::transparent), 
                                          3, 
                                          Qt::DashLine);
 ///TODO
-            polyArea->setUID(uid);
+            paintPoly->setUID(uid);
 
             //double varea_square = fabs(countSquare());
             //double varea_max = uav->getMaxAreaSquare();
@@ -184,8 +199,8 @@ void VArea::setPoly(QPointF)
                 polyArea->setColorPen(new QColor(Qt::green));
             }
             */
-            vScene->addItem(polyArea);
-            f_createPolyArea = true;
+            vScene->addItem(paintPoly);
+            f_create_poly = true;
         }
     }
 }
@@ -193,21 +208,21 @@ void VArea::setPoly(QPointF)
 void VArea::createPoly()
 {
 
-    if (pointsArea->size() > 2)
+    if (points->size() > 2)
     {
-        if (f_createPolyArea)
+        if (f_create_poly)
         {
-            polyArea->setColorPen(new QColor(Qt::black));
+            paintPoly->setColorPen(new QColor(Qt::black));
         }
 
-        f_createPolyArea = true;
+        f_create_poly = true;
         emit savePoly();
     }
 }
 
 void VArea::create(QPointF &pos)
 {
-    if ( pointsPaintArea->isEmpty() )
+    if ( paintPoints->isEmpty() )
     {
         pos.setX(pos.x()-5);
         pos.setY(pos.y()-5);
@@ -227,15 +242,15 @@ void VArea::create(QPointF &pos)
 
 void VArea::setPointsPaint(VPointPaintArray *pointsPaintArea)
 {
-    this->pointsPaintArea = pointsPaintArea;
+    this->paintPoints = pointsPaintArea;
 }
 
 
 void VArea::setDefaultColor()
 {
-    for ( int i = 0; i < pointsPaintArea->size(); i++ )
+    for ( int i = 0; i < paintPoints->size(); i++ )
     {
-        pointsPaintArea->at(i)->setDefaultColor();
+        paintPoints->at(i)->setDefaultColor();
     }
 }
 
@@ -246,12 +261,12 @@ void VArea::setVScene(QGraphicsScene *vScene)
 
 VPaintPolygon *VArea::getPolygonPaint()
 {
-    return polyArea;
+    return paintPoly;
 }
 
 QDataStream& operator>>( QDataStream& stream, VArea& area )
 {
-    stream  >> *area.pointsArea;
+    stream  >> *area.points;
     return stream;
 }
 
@@ -268,7 +283,7 @@ void VArea::createPolyFromNet(QVector<QPointF> *pointsArea, UIDType uid)
         VPaintPoint *newPoint = new VPaintPoint(QRect(-4, -4, 8, 8),
                                                 true,
                                                 Qt::black, Qt::black,
-                                                 pointsPaintArea->size());
+                                                 paintPoints->size());
         newPoint->setPos(p);
         vScene->addItem(newPoint);
     }
@@ -286,12 +301,12 @@ void VArea::createPolyFromNet(QVector<QPointF> *pointsArea, UIDType uid)
          }
      }
 
-     polyArea = new VPaintPolygon(pointsArea,
+     paintPoly = new VPaintPolygon(pointsArea,
                                   new QColor(Qt::transparent), 
                                   3, 
                                   Qt::DashLine);
-     polyArea->setUID(uid);
-     vScene->addItem(polyArea);
+     paintPoly->setUID(uid);
+     vScene->addItem(paintPoly);
 
-    f_createPolyArea = true;
+    f_create_poly = true;
 }

@@ -102,7 +102,7 @@ void VRouteDron::create()
     _create();
 }
 
-void VRouteDron::createFromNet(QVector<QPointF> *pointsRouteDron, UIDType uid)
+void VRouteDron::createFromNet(QVector<QPointF> *pointsRouteDron, UIDType)
 {
     this->pointsRoute = pointsRouteDron;
     if(vScene->items().contains(lineRoute))
@@ -139,7 +139,7 @@ void VRouteDron::remove()
     }
 }
 
-void VRouteDron::setPaintPoints(VPaintPoint *point, double speed)
+void VRouteDron::setPaintPoints(VPaintPoint *point)
 {
     this->paintPointsRoute->append(point);
     this->pointsRoute->append( QPointF(point->x(), point->y()) );

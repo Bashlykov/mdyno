@@ -1,12 +1,12 @@
 #include "vrouteship.h"
 
 VRouteShip::VRouteShip() :
-    pointsRoute( new QVector<QPointF>),
-    pointsPaintRoute (new VPointPaintArray),
-    linesRouteShip(nullptr),
-    f_createLineRoute ( false),
-    f_linesRoute ( false),   
-    routeBuilded ( false),
+    points( new QVector<QPointF>),
+    paintPoints (new VPointPaintArray),
+    paintLines(nullptr),
+    f_create_line ( false),
+    f_lines ( false),
+    route_builded ( false),
     speed( 5.0f)
 {
 
@@ -14,48 +14,57 @@ VRouteShip::VRouteShip() :
 
 VRouteShip::~VRouteShip()
 {
-    pointsRoute->clear();
-    pointsPaintRoute->clear();
-    delete pointsRoute;
-    delete pointsPaintRoute;
-    delete linesRouteShip;
-}
-
-void VRouteShip::setSpeed(float speedShip)
-{
-    this->speed = speedShip;
+    points->clear();
+    paintPoints->clear();
+    delete points;
+    delete paintPoints;
+    delete paintLines;
 }
 
 void VRouteShip::addPointFromCursor(QPointF &pos)
 {
-    VPaintPoint *newPoint = new VPaintPoint( QRect(-4, -4, 8, 8), true,
-                                    Qt::red, Qt::red,
-                                             pointsPaintRoute->size());
+    VPaintPoint *newPoint = new VPaintPoint( QRect(-4, -4, 8, 8),
+                                             true,
+                                             Qt::red, Qt::red,
+                                             paintPoints->size());
 
     newPoint->setPos(pos);
-
     vScene->addItem(newPoint);
-
-    pointsPaintRoute->append(newPoint);
-    pointsRoute->append(pos);
+    paintPoints->append(newPoint);
+    points->append(pos);
 
     connect(newPoint, SIGNAL(setNewPos(QPointF)), this, SLOT(set(QPointF)));
     connect(newPoint, SIGNAL(numPoint(int)), this, SLOT(setNumPointClick(int)));
+    connect(newPoint, SIGNAL(deletingThis(int)), this, SLOT(deletePoint(int)));
 
     emit createPoint(newPoint);
 
-    if ( pointsRoute->size() > 1 )
+    if ( points->size() > 1 )
     {
         set(pos);
     }
 
-    if (pointsPaintRoute->size() == 1)
+    if (paintPoints->size() == 1)
     {
         emit addFirstPoint(pos);
     }
-    else if (pointsPaintRoute->size() == 2)
+    else if (paintPoints->size() == 2)
     {
         emit addedSecondPoint(true);
+    }
+}
+
+void VRouteShip::deletePoint(int num)
+{
+    for(int i=0; i<paintPoints->size(); i++)
+    {
+        if (paintPoints->at(i)->getNum() == num)
+        {
+            vScene->removeItem(paintPoints->at(i));
+            paintPoints->removeAll(paintPoints->at(i));
+            points->removeAt(i);
+            set(QPointF());
+        }
     }
 }
 
@@ -67,56 +76,56 @@ void VRouteShip::setVScene(QGraphicsScene *vScene)
 
 void VRouteShip::setNumPointClick(int num)
 {
-    for ( int i = 0; i < pointsPaintRoute->size(); i++ )
+    for ( int i = 0; i < paintPoints->size(); i++ )
     {
-        if ( num != pointsPaintRoute->at(i)->getNum() )
+        if ( num != paintPoints->at(i)->getNum() )
         {
-            pointsPaintRoute->at(i)->setDefaultColor();
+            paintPoints->at(i)->setDefaultColor();
         }
     }
 }
 
 void VRouteShip::setDefaultColor()
 {
-    for ( int i = 0; i < pointsPaintRoute->size(); i++ )
+    for ( int i = 0; i < paintPoints->size(); i++ )
     {
-        pointsPaintRoute->at(i)->setDefaultColor();
+        paintPoints->at(i)->setDefaultColor();
     }
 }
 
 
-void VRouteShip::setPaintPoints(VPaintPoint *point, double speed)
+void VRouteShip::setPaintPoints(VPaintPoint *point)
 {
-    this->pointsPaintRoute->append(point);
-    this->pointsRoute->append( QPointF(point->x(), point->y()) );
+    this->paintPoints->append(point);
+    this->points->append( QPointF(point->x(), point->y()) );
 }
 
 
 VPaintMultiLine *VRouteShip::getLine()
 {
-    return this->linesRouteShip;
+    return this->paintLines;
 }
 
 QVector<QPointF> *VRouteShip::getPoints()
 {
-    return this->pointsRoute;
+    return this->points;
 }
 
 void VRouteShip::remove()
 {
     try
     {
-        if ( f_createLineRoute )
+        if ( f_create_line )
         {
-            for( int i = 0; i < pointsPaintRoute->size(); i++ )
+            for( int i = 0; i < paintPoints->size(); i++ )
             {
-                vScene->removeItem(pointsPaintRoute->at(i));
+                vScene->removeItem(paintPoints->at(i));
             }
-            vScene->removeItem(linesRouteShip);
-            pointsPaintRoute->clear();
-            pointsRoute->clear();
+            vScene->removeItem(paintLines);
+            paintPoints->clear();
+            points->clear();
 
-            f_createLineRoute = false;
+            f_create_line = false;
         }
     }
     catch(std::exception &exept)
@@ -134,38 +143,39 @@ void VRouteShip::create()
     if ( speed <= 0 )
         return;
 
-    if (pointsRoute->size() > 1)
+    if (points->size() > 1)
     {
-        linesRouteShip->setUID(uid);
-        routeBuilded = true;
+        paintLines->setUID(uid);
+        route_builded = true;
         emit created(true);
     }
 }
 
 VPointPaintArray *VRouteShip::getPaintPoints()
 {
-    return pointsPaintRoute;
+    return paintPoints;
 }
 
 void VRouteShip::set(QPointF)
 {
     try
     {
-        pointsRoute->clear();
+        points->clear();
 
-        for( int i = 0; i < pointsPaintRoute->size(); i++ )
+        for( int i = 0; i < paintPoints->size(); i++ )
         {
-            pointsRoute->append(pointsPaintRoute->at(i)->pos());
+            points->append(paintPoints->at(i)->pos());
         }
 
-        if ( f_createLineRoute )
-            vScene->removeItem(linesRouteShip);
+        if ( f_create_line )
+            vScene->removeItem(paintLines);
 
-        linesRouteShip = new VPaintMultiLine(pointsRoute,
-                                             new QBrush(Qt::red), 2, Qt::DotLine);
+        paintLines = new VPaintMultiLine(points,
+                                         new QBrush(Qt::red),
+                                         2, Qt::DotLine);
 
-        vScene->addItem(linesRouteShip);
-        f_createLineRoute = true;
+        vScene->addItem(paintLines);
+        f_create_line = true;
     }
     catch(std::exception &exept)
     {
@@ -178,9 +188,9 @@ void VRouteShip::set(QPointF)
 
 void VRouteShip::createFromNet(QVector<QPointF> *points, UIDType uid)
 {
-    this->pointsRoute = points;
+    this->points = points;
 
-    for(QPointF p: *pointsRoute)
+    for(QPointF p: *points)
     {
             VPaintPoint *point = new VPaintPoint(QRect(-4, -4, 8, 8),
                                              false,
@@ -204,11 +214,11 @@ void VRouteShip::createFromNet(QVector<QPointF> *points, UIDType uid)
         }
     }
 
-    linesRouteShip = new VPaintMultiLine(points,
+    paintLines = new VPaintMultiLine(points,
                                          new QBrush(Qt::red),
                                          2, Qt::DotLine);
-    linesRouteShip->setUID(uid);
+    paintLines->setUID(uid);
 
-    vScene->addItem(linesRouteShip);
-    f_createLineRoute = true;
+    vScene->addItem(paintLines);
+    f_create_line = true;
 }

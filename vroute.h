@@ -20,13 +20,12 @@ public:
 
     virtual VPointPaintArray *getPaintPoints() = 0;
     virtual QVector<QPointF> *getPoints() = 0;
-    virtual void setPaintPoints(VPaintPoint *, double ) = 0;
+    virtual void setPaintPoints(VPaintPoint *) = 0;
     virtual void createFromNet(QVector<QPointF> *, UIDType ) = 0;
     virtual void remove() = 0;
     virtual VPaintMultiLine *getLine() = 0;
     virtual void addPointFromCursor(QPointF &pos) = 0;
 
-    virtual void setSpeed(float speed) = 0;
     virtual void setUID(UIDType uid) = 0;
     virtual UIDType getUID() = 0;
 
@@ -38,6 +37,7 @@ public slots:
     virtual void setDefaultColor() = 0;
     virtual void setNumPointClick(int) = 0;
     virtual void set(QPointF) = 0;
+    virtual void deletePoint(int) = 0;
 
 signals:
     void createPoint(VPaintPoint *);

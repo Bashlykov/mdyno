@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QObject>
+#include <QMenu>
 
 class VPaintPoint : public QGraphicsObject
 {
@@ -18,12 +19,14 @@ class VPaintPoint : public QGraphicsObject
     bool f_move;
     bool prevVisibleState;
     Qt::GlobalColor color;
-    QPointF dragStartPosition;
     Qt::GlobalColor penColor;
     Qt::GlobalColor tmpColor;
     Qt::GlobalColor tmpPenColor;
     QRect size;
     //UIDType uid;
+
+    QMenu menu;
+    QAction *removeAction;
 
 public:
     VPaintPoint( QRect size,
@@ -48,16 +51,22 @@ protected:
     void advance(int step) Q_DECL_OVERRIDE;
     void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+
+private slots:
+    void slotForDelSignal(bool);
 
 public slots:
-    void selectFromRow(int num);
     void setDefaultColor();
+
 
 signals:
     void setNewPos(QPointF);
     void setNumNewPos(int num, QPointF);
     void numPoint(int num);
     void numPointNumGroup(int num, int numGroup);
+    void deletingThis(int);
 
 };
 

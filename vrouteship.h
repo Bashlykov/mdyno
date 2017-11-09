@@ -6,15 +6,15 @@
 
 class VRouteShip : public VRoute
 {
-    VPointPaintArray *pointsPaintRoute;
-    QVector<QPointF> *pointsRoute;
-    VPaintMultiLine *linesRouteShip;
+    VPointPaintArray *paintPoints;
+    QVector<QPointF> *points;
+    VPaintMultiLine *paintLines;
     QGraphicsScene *vScene;
-    bool f_createLineRoute;
-    bool f_linesRoute;
+    bool f_create_line;
+    bool f_lines;
     float speed;
     UIDType uid;
-    bool routeBuilded;
+    bool route_builded;
 
 public:
     VRouteShip();
@@ -25,24 +25,24 @@ public:
 
     VPointPaintArray *getPaintPoints();
     QVector<QPointF> *getPoints();
-    void setPaintPoints(VPaintPoint *point, double speed);
+    void setPaintPoints(VPaintPoint *point);
     void createFromNet(QVector<QPointF> *points, UIDType uid);
     void remove();
     VPaintMultiLine *getLine();
     void addPointFromCursor(QPointF &pos);
 
-    void setSpeed(float speed);
     void setUID(UIDType uid){this->uid = uid;}
     UIDType getUID(){return uid;}
 
-    bool getFlagBuild(){return routeBuilded;}
-    void setFlagBuild(bool f){routeBuilded = f;}
+    bool getFlagBuild(){return route_builded;}
+    void setFlagBuild(bool f){route_builded = f;}
 
 public slots:
     void create();
     void setDefaultColor();
     void setNumPointClick(int num);
     void set(QPointF);
+    void deletePoint(int num);
 
 };
 

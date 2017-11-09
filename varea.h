@@ -21,19 +21,16 @@ class VArea: public QObject
 {   
     Q_OBJECT
 
-    VPointPaintArray *pointsPaintArea;
-    QVector<QPointF> *pointsArea;
-    VPaintPolygon *polyArea;
-    VPaintMultiLine *linesArea;
+    VPointPaintArray *paintPoints;
+    QVector<QPointF> *points;
+    VPaintPolygon *paintPoly;
+    VPaintMultiLine *paintLines;
     QPolygonF *poly;
     QGraphicsScene *vScene;
-    QVector<QPointF> pointsPlaneArea;
     QList<VArea*> *listThisObjects;
     UIDType uid;
-    bool f_createPolyArea;
-    bool f_linesArea;
-    bool f_enableEditAreaRoute;
-
+    bool f_create_poly;
+    bool f_lines;
 
     QAction *removeAction;
     QAction *addPointAction;
@@ -46,13 +43,13 @@ public:
     VPointPaintArray *getPointsPaint();
     void setPolygon(QPolygonF *poly);
     QVector<QPointF> *getPoints();
-    void setPointsPaint(VPointPaintArray *pointsPaintArea);
+    void setPointsPaint(VPointPaintArray *paintPoints);
     void createPoint(QPointF &p);
     void setPointPaint(VPaintPoint *point);
     void create(QPointF &pos);
     void setVScene(QGraphicsScene *vScene);
     VPaintPolygon *getPolygonPaint();
-    void createPolyFromNet(QVector<QPointF> *pointsArea, UIDType uid);
+    void createPolyFromNet(QVector<QPointF> *points, UIDType uid);
     void setUID(UIDType uid){this->uid = uid;}
     UIDType getUID(){return uid;}
     void setListThisObjects(QList<VArea*> *listThisObjects){this->listThisObjects = listThisObjects;}
@@ -66,6 +63,7 @@ private slots:
     void removePoly();
     void createPoly();
     void setPoly(QPointF);
+    void deletePoint(int num);
 
 public slots:
     void setDefaultColor();

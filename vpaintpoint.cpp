@@ -8,9 +8,9 @@ VPaintPoint::VPaintPoint(QRect size,
     size(size),
     color(color),
     penColor(penColor),
-    num (num),
     tmpColor(color),
     tmpPenColor (penColor),
+    num (num),
     f_move (f_move)
 {
     setFlag( QGraphicsItem::ItemIgnoresTransformations );
@@ -21,10 +21,21 @@ VPaintPoint::VPaintPoint(QRect size,
         setAcceptedMouseButtons(Qt::LeftButton);
     }
     prevVisibleState = true;
+
+    removeAction = menu.addAction("Удалить точку");
+
+    connect(removeAction, SIGNAL(triggered(bool)), this, SLOT(slotForDelSignal(bool)));
+}
+
+void VPaintPoint::slotForDelSignal(bool)
+{
+    emit deletingThis(this->num);
 }
 
 VPaintPoint::~VPaintPoint()
 {
+    delete &menu;
+    delete removeAction;
 }
 
 QRectF VPaintPoint::boundingRect() const
@@ -74,18 +85,9 @@ void VPaintPoint::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void VPaintPoint::selectFromRow(int num)
+void VPaintPoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    if (this->num == num)
-    {
-        color = Qt::yellow;
-        penColor = Qt::yellow;
-    }
-    else
-    {
-        color = tmpColor;
-        penColor = tmpPenColor;
-    }
+    menu.exec(event->screenPos());
 }
 
 void VPaintPoint::setDefaultColor()

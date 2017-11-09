@@ -11,7 +11,7 @@ DynamicObjectManager::DynamicObjectManager(Ui::ModelingDynamicObject *ui):
     f_enableEditArea(false),
     f_enableEditRouteShip(false),
     object_select(Area),
-    indexArea(0),
+    index_area(0),
     countShip(0)
 {
      connect(ui->addObjectButtonOk, SIGNAL(clicked()),
@@ -42,7 +42,7 @@ DynamicObjectManager::~DynamicObjectManager()
 
 void DynamicObjectManager::setCurrentIndexArea(int i)
 {
-    this->indexArea = i;
+    this->index_area = i;
 }
 
 bool DynamicObjectManager::eventFilter(QObject *, QEvent *event)
@@ -61,7 +61,7 @@ bool DynamicObjectManager::eventFilter(QObject *, QEvent *event)
                 if (listVArea->size() == 0)
                    return false;
 
-               listVArea->at(indexArea)->createPoint(pos);
+               listVArea->at(index_area)->createPoint(pos);
 
            }
            else if ( f_enableEditRouteShip ) //Добавить точку для траектории
@@ -100,7 +100,7 @@ bool DynamicObjectManager::eventFilter(QObject *, QEvent *event)
                 {
                     qDebug() << "click in polygon" << listVArea->at(i)->getUID();
                     listVArea->at(i)->menu.exec(QCursor::pos());
-                    indexArea = i;
+                    index_area = i;
                 }
             }
 
@@ -293,7 +293,7 @@ void DynamicObjectManager::addObjectToMap()
                                 QString("Не создано ни  одного района!"));
                     return;
                 }
-                currentShip->createChild(listVArea->at(indexArea));
+                currentShip->createChild(listVArea->at(index_area));
         break;
         case OilDerrick:
                 createOilDerrick();

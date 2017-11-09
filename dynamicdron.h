@@ -54,7 +54,7 @@ public slots:
         void setStartPosition() override;       
         void removeData() override{}
         void createRouteChild() override{}
-        void createdRoute(bool) override{}
+        void createdRoute(bool) override{}        
 };
 
 
