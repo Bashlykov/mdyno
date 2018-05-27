@@ -21,9 +21,10 @@ class VPaintPolygon : public QGraphicsObject
     QVector<QPointF> *pointsPolygon;
 
 protected:
-    void setPoly(QPolygonF& poly);
+
 
 public:
+    void setPoly(QPolygonF& poly);
     VPaintPolygon();
     VPaintPolygon(QVector<QPointF> *pointsPolygon,
                    QColor *color = new QColor(Qt::black),
