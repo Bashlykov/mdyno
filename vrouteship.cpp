@@ -1,13 +1,14 @@
 #include "vrouteship.h"
 
 VRouteShip::VRouteShip() :
-    points( new QVector<QPointF>),
+
     paintPoints (new VPointPaintArray),
+    points( new QVector<QPointF>),
     paintLines(nullptr),
     f_create_line ( false),
-    f_lines ( false),
-    route_builded ( false),
-    speed( 5.0f)
+    //f_lines ( false),
+    speed( 5.0f),
+    route_builded ( false)
 {
 
 }
@@ -133,7 +134,7 @@ void VRouteShip::remove()
         qDebug() << "exception" << exept.what();
         QString strMsg = "Exception! " + QString(exept.what());
         QMessageBox msg;
-        msg.warning(0, "Warning!", strMsg);
+        msg.warning(dynamic_cast<QWidget*>(this), "Warning!", strMsg);
     }
 }
 
@@ -182,7 +183,7 @@ void VRouteShip::set(QPointF)
         qDebug() << "exception" << exept.what();
         QString strMsg = "Exception! " + QString(exept.what());
         QMessageBox msg;
-        msg.warning(0, "Warning!", strMsg);
+        msg.warning(dynamic_cast<QWidget*>(this), "Warning!", strMsg);
     }
 }
 
@@ -195,8 +196,7 @@ void VRouteShip::createFromNet(QVector<QPointF> *points, UIDType uid)
             VPaintPoint *point = new VPaintPoint(QRect(-4, -4, 8, 8),
                                              false,
                                              Qt::red,
-                                             Qt::red
-                                             );
+                                             Qt::red);
 
             vScene->addItem(point);
             point->setPos(p);

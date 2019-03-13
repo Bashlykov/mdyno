@@ -11,7 +11,7 @@ class VRouteShip : public VRoute
     VPaintMultiLine *paintLines;
     QGraphicsScene *vScene;
     bool f_create_line;
-    bool f_lines;
+    //bool f_lines;
     float speed;
     UIDType uid;
     bool route_builded;

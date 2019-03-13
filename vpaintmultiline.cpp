@@ -3,12 +3,11 @@
 VPaintMultiLine::VPaintMultiLine(QVector<QPointF> *pointsLine,
                                   QBrush *brush,
                                   qreal penWidth,
-                                  Qt::PenStyle penStyle
-                                 ):
+                                  Qt::PenStyle penStyle ):
+    prevVisibleState(true),
     brush(brush),
-    penWidth ( penWidth),
-    penStyle ( penStyle),
-    prevVisibleState ( true)
+    penWidth(penWidth),
+    penStyle(penStyle)
 {
     this->poly = new QPolygonF(*pointsLine);
 }

@@ -3,9 +3,9 @@
 DynamicDron::DynamicDron(UIDType id) :
                         IDynamicObject(id),
                         vls(new QVector<QLineF>),
-                        area(nullptr),
-                        parentShape(nullptr),
-                        routeDron(new VRouteDron)
+                        routeDron(new VRouteDron),
+                        parentShape(nullptr),                                               
+                        area(nullptr)
 {
     *vls    << QLineF(-6, -10, 6, 10)
                 << QLineF(-6, 10, 6, -10)
@@ -50,7 +50,9 @@ void DynamicDron::setStartPosition()
 void DynamicDron::getProper(bool)
 {
     QMessageBox msg;
-    msg.information(0, QString("Свойства"), QString("Id БПЛА: %1\nId Судна: %2").arg(getUID()).arg(parentShape->getUID()), NULL, NULL);
+    msg.information(nullptr, QString("Свойства"),
+                    QString("Id БПЛА: %1\nId Судна: %2").arg(getUID()).arg(parentShape->getUID()),
+                    nullptr, nullptr);
 }
 
 void DynamicDron::paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *)
@@ -79,10 +81,11 @@ void DynamicDron::triggeredSetupRouteAction()
     if ( !parentShape->f_route_created )
     {
         QMessageBox msg;
-        msg.warning(0, QString("Внимание!"),
-                            QString("Для построения траектории БПЛА нужно сохранить траекторию судна!"),
-                            QMessageBox::Ok,
-                            NULL);
+        msg.warning(dynamic_cast<QWidget*>(this),
+                    QString("Внимание!"),
+                    QString("Для построения траектории БПЛА нужно сохранить траекторию судна!"),
+                    QMessageBox::Ok
+                    );
         return;
     }
 
@@ -120,8 +123,8 @@ void DynamicDron::deserialize(QByteArray& ba)
 QDataStream& operator>>( QDataStream& stream, DynamicDron& dron )
 {
     UIDType uid_dron;
-    QPointF pos(0.0f, 0.0f);
-    double angle = 0.0f;
+    QPointF pos(0.0, 0.0);
+    double angle = 0.0;
     UIDType uid_area;
     VArea *area = new VArea;
     QVector<QPointF> pointsArea;

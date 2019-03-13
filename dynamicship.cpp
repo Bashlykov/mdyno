@@ -4,21 +4,19 @@ DynamicShip::DynamicShip(UIDType uid) :
             IDynamicObject(uid),
             vps(new QVector<QPointF>),
             vRoute(new VRouteShip),
+            listThisObjects(new QList<DynamicShip*>),
             listChild(new QList<DynamicDron*>),
             listChildFromNet(new QList<DynamicDron*>),
-            listThisObjects(new QList<DynamicShip*>),
-
-            f_created_child(false),
             countChild(0),
-            currentIdChild(-1),
             i_p(0)
-
+            //f_created_child(false),
+            //currentIdChild(-1),
 {
     *vps    << QPointF(-10, -7)
-                 << QPointF(-10, 7)
-                 << QPointF(10, 7)
-                 << QPointF(20, 0)
-                 << QPointF(10, -7);
+            << QPointF(-10, 7)
+            << QPointF(10, 7)
+            << QPointF(20, 0)
+            << QPointF(10, -7);
 
     vRoute->setUID(uid);
 
@@ -104,7 +102,7 @@ void DynamicShip::advance(int step)
     setPos(steps.x.at(i_p), steps.y.at(i_p));
 
 // Angle rotate of current dot
-    if ( prevAngle != steps.angle.at(i_p) )
+    if ( !(fabs(prevAngle - steps.angle.at(i_p)) < EPS) )
     {
         prevAngle = steps.angle.at(i_p);
         setRotation( (steps.angle.at(i_p) * 180 / M_PI) );
@@ -128,11 +126,11 @@ void DynamicShip::setStartPosition()
     prevAngle = 0.0;
     i_p = 0;
     setPos(startPos);
-    setRotation(0.0f);
+    setRotation(0.0);
     for( DynamicDron *dron: *listChild )
     {
         dron->setPos(startPos);
-        dron->setRotation(0.0f);
+        dron->setRotation(0.0);
         dron->show();
     }
 }
@@ -198,7 +196,7 @@ VArea *DynamicShip::getVArea()
 
 void DynamicShip::createChild(VArea *area)
 {
-    qsrand(QTime::currentTime().msec());
+    qsrand(static_cast<uint>(QTime::currentTime().msec()));
     UIDType uid = (qrand() % 90000 + 10000);
     DynamicDron *dron = new DynamicDron(uid);
     scene()->addItem(dron);

@@ -35,11 +35,11 @@ public:
                  Qt::GlobalColor penColor = Qt::black,
                  int num = 0 );
 
-    ~VPaintPoint();
-    QRectF boundingRect() const Q_DECL_OVERRIDE;
-    QPainterPath shape() const Q_DECL_OVERRIDE;
+    ~VPaintPoint() override;
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
     void paint(QPainter *p, const QStyleOptionGraphicsItem *,
-               QWidget *widget) Q_DECL_OVERRIDE;
+               QWidget *widget) override;
 
     int getNum(){return num;}
     //void setUID(UIDType uid){this->uid = uid;}
@@ -48,10 +48,10 @@ public:
     void restoreVisibleState(){setVisible(prevVisibleState);}
 
 protected:
-    void advance(int step) Q_DECL_OVERRIDE;
-    void mousePressEvent(QGraphicsSceneMouseEvent *) Q_DECL_OVERRIDE;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+    void advance(int step) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 
 private slots:

@@ -13,11 +13,11 @@ class VRouteDron : public VRoute
     VPointPaintArray *paintPointsRoute;
     QVector<QPointF> *pointsRoute;
     VPaintMultiLine *lineRoute;
-    RouteDron *routeDron;
-    bool f_createLineRouteParent;
+    //RouteDron *routeDron;
+    //bool f_createLineRouteParent;
     bool f_createRoute;
 
-    QString *layerName;
+    //QString *layerName;
     VArea *varea;
     QGraphicsScene *vScene;
 

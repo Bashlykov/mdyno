@@ -18,7 +18,7 @@
 #include <QVector2D>
 #include <QGraphicsTextItem>
 
-QVector2D &calcBezierPoint(float t, QVector2D &p0, QVector2D &p1, QVector2D &p2, QVector2D &p3);
+QVector2D &calcBezierPoint(float t, QVector2D &p0, QVector2D &p1, QVector2D &p2, QVector2D &p3, QVector2D &p);
 QVector<QLineF> *drawBezier(QVector2D &p0, QVector2D &p1, QVector2D &p2, QVector2D &p3);
 QVector<QLineF*> *clipping_lines(QVector<QLineF*> *lines_not_clip, QPolygonF &polygon);
 void connect_points_bezier(QVector<QPointF> *path_dron_points,

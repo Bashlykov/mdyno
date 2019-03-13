@@ -2,17 +2,18 @@
 
 DynamicObjectManager::DynamicObjectManager(Ui::ModelingDynamicObject *ui):
 
-    ui(ui),
+
     listShip(new QList<DynamicShip*>),
-    listVArea(new QList<VArea*>),
     currentShip(nullptr),
     f_createdShip(false),
     f_startModeling(false),
     f_enableEditArea(false),
     f_enableEditRouteShip(false),
-    object_select(Area),
     index_area(0),
-    countShip(0)
+    countShip(0),
+    listVArea(new QList<VArea*>),
+    object_select(Area),
+    ui(ui)
 {
      connect(ui->addObjectButtonOk, SIGNAL(clicked()),
             this, SLOT(addObjectToMap()));
@@ -206,7 +207,7 @@ void DynamicObjectManager::setVScene(QGraphicsScene* scene)
 
 void DynamicObjectManager::createShip()
 {
-    qsrand(QTime::currentTime().msec());
+    qsrand(static_cast<uint>(QTime::currentTime().msec()));
     UIDType uid = (qrand() % 90000 + 10000);
     qDebug() << "ship created with id " << uid;
     DynamicShip *ship = new DynamicShip(uid);
@@ -214,7 +215,7 @@ void DynamicObjectManager::createShip()
     scene->update();
     ship->getRoute()->setVScene(scene);
     ship->setTypeObj(TypeObject::Ship);
-    ship->setPos(0.0f,0.0f);
+    ship->setPos(0.0, 0.0);
     listShip->append(ship);
     ship->setListThisObjects(reinterpret_cast<QList<IDynamicObject*>*>(listShip));
     currentShip = ship;
@@ -245,7 +246,7 @@ void DynamicObjectManager::createOilDerrick()
     oilDerrick->setFlags(QGraphicsItem::ItemIsSelectable | QGraphicsItem::ItemIsMovable);
     oilDerrick->setFlag( QGraphicsItem::ItemIgnoresTransformations );
     scene->addItem(oilDerrick);
-    oilDerrick->setPos(0.0f,0.0f);
+    oilDerrick->setPos(0.0, 0.0);
 }
 
 void DynamicObjectManager::setCurrentIndexObject(int index)
@@ -282,14 +283,14 @@ void DynamicObjectManager::addObjectToMap()
                 if ( listShip->size() < 1 )
                 {
                     QMessageBox msg;
-                    msg.warning(0, QString("Предупреждение"),
+                    msg.warning(dynamic_cast<QWidget*>(this), QString("Предупреждение"),
                                 QString("Не создано ни одного судна!"));
                     return;
                 }
                 if(listVArea->size() == 0)
                 {
                     QMessageBox msg;
-                    msg.warning(0, QString("Предупреждение"),
+                    msg.warning(dynamic_cast<QWidget*>(this), QString("Предупреждение"),
                                 QString("Не создано ни  одного района!"));
                     return;
                 }
@@ -313,12 +314,13 @@ void DynamicObjectManager::enableEditRoute()
 VArea *DynamicObjectManager::createVArea()
 {
     VArea *varea = new VArea;
-    qsrand(QTime::currentTime().msec());
+    qsrand(static_cast<uint>(QTime::currentTime().msec()));
     UIDType uid = (qrand() % 90000 + 10000);
     varea->setUID(uid);
     qDebug() << "area id" << varea->getUID();
     varea->setVScene(scene);
-    varea->create(QPointF(0.0, 0.0));
+    QPointF point(0.0, 0.0);
+    varea->create(point);
     listVArea->append(varea);
     varea->setListThisObjects(listVArea);
     connect(varea, SIGNAL(addingPoint()), this, SLOT(enableEditArea()));

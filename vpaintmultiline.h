@@ -24,7 +24,7 @@ public:
                      qreal penWidth = 1,
                      Qt::PenStyle penStyle = Qt::SolidLine
                     );
-    ~VPaintMultiLine();
+    ~VPaintMultiLine() override;
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     QPainterPath shape() const Q_DECL_OVERRIDE;
     void paint(QPainter *p, const QStyleOptionGraphicsItem *,

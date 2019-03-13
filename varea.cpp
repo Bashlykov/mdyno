@@ -1,8 +1,8 @@
 #include "varea.h"
 
 VArea::VArea():
-    points( new QVector<QPointF> ),
     paintPoints( new VPointPaintArray ),
+    points( new QVector<QPointF> ),
     paintPoly( new VPaintPolygon ),
     listThisObjects(nullptr),
     f_create_poly( false ),
@@ -236,7 +236,7 @@ void VArea::createPoly()
 
             // Search max length of line from polygon for min square bounding rectangle
             QLineF max_poly_line = poly_lines->at(0);
-            float max_len = max_poly_line.length();
+            qreal max_len = max_poly_line.length();
 
             for(int i=1; i < poly_lines->length(); i++)
             {
@@ -248,9 +248,9 @@ void VArea::createPoly()
             }
 
             // Rotate the polygon so that the line with the maximum length had an angle of 0 degrees
-            float angle_base = 360.0;
-            float angle_from = max_poly_line.angle();
-            float angle_to = angle_base - angle_from;
+            qreal angle_base = 360.0;
+            qreal angle_from = max_poly_line.angle();
+            qreal angle_to = angle_base - angle_from;
 
             QMatrix matrix;
             matrix.rotate(angle_from);
@@ -266,10 +266,10 @@ void VArea::createPoly()
             QPointF bottomRight(getPolygonPaint()->boundingRect().bottomRight());
             QPointF bottomLeft(getPolygonPaint()->boundingRect().bottomLeft());
             v = new QVector<QPointF>;
-            *v          << topLeft
-                        << topRight
-                        << bottomRight
-                        << bottomLeft;
+            *v  << topLeft
+                << topRight
+                << bottomRight
+                << bottomLeft;
             // for debug
             r = new VPaintPolygon(v, new QColor(125, 55, 99, 15));
             vScene->addItem(r);
@@ -279,7 +279,7 @@ void VArea::createPoly()
             QLineF bottom_line(bottomLeft, bottomRight);// bottom line
 
             int width = 15; // width between lines
-            float num = top_line.length() / width; // num of lines
+            qreal num = top_line.length() / width; // num of lines
 
             // Create vertical lines from the top line to the bottom line
             QVector<QLineF*> *lines_not_clip = new QVector<QLineF*>;
@@ -356,36 +356,36 @@ void connect_points_bezier(QVector<QPointF> *dron_points,
 
     for(int i=0; i < len-1; i+=1)
     {
-        QPointF *p1_current;
-        QPointF *p2_current;
-        QPointF *p1_next;
+        QPointF p1_current;
+        QPointF p2_current;
+        QPointF p1_next;
 
         if( i % 2 == 0 )
         {
-            p1_current = &lines_clip->at(i)->p1();
-            p1_next = &lines_clip->at(i+1)->p1();
-            p2_current = &lines_clip->at(i)->p2();
+            p1_current = lines_clip->at(i)->p1();
+            p1_next = lines_clip->at(i+1)->p1();
+            p2_current = lines_clip->at(i)->p2();
         }
         else
         {
-            p1_current = &lines_clip->at(i)->p2();
-            p1_next = &lines_clip->at(i+1)->p2();
-            p2_current = &lines_clip->at(i)->p1();
+            p1_current = lines_clip->at(i)->p2();
+            p1_next = lines_clip->at(i+1)->p2();
+            p2_current = lines_clip->at(i)->p1();
         }
 
-        QVector2D p0(*p1_current);
+        QVector2D p0(p1_current);
 
-        QVector2D p1(p1_current->x(),
-                     (p1_current->y() < p2_current->y() ?
-                        p1_current->y() - curve_height :
-                        p1_current->y() + curve_height  ));
+        QVector2D p1(static_cast<float>(p1_current.x()),
+                     (p1_current.y() < p2_current.y() ?
+                        static_cast<float>(p1_current.y() - curve_height) :
+                        static_cast<float>(p1_current.y() + curve_height)));
 
-        QVector2D p2(p1_next->x(),
-                     (p1_next->y() < p2_current->y() ?
-                        p1_next->y() - curve_height :
-                        p1_next->y() + curve_height  ));
+        QVector2D p2(static_cast<float>(p1_next.x()),
+                     (p1_next.y() < p2_current.y() ?
+                        static_cast<float>(p1_next.y() - curve_height) :
+                        static_cast<float>(p1_next.y() + curve_height)));
 
-        QVector2D p3(*p1_next);
+        QVector2D p3(p1_next);
 
 
         QVector<QLineF> *lines_bezier = drawBezier(p0, p1, p2, p3);
@@ -403,6 +403,9 @@ void connect_points_bezier(QVector<QPointF> *dron_points,
 // Clipping lines over polygon
 QVector<QLineF*> *clipping_lines(QVector<QLineF*> *lines_not_clip, QPolygonF &polygon)
 {
+    QPointF *point1 = nullptr;
+    QPointF *point2 = nullptr;;
+    QPointF *point_intersect = new QPointF;
     QVector<QLineF*> *lines_clip = new QVector<QLineF*>;
     for( int j=0; j < lines_not_clip->length(); j++)
     {
@@ -413,10 +416,6 @@ QVector<QLineF*> *clipping_lines(QVector<QLineF*> *lines_not_clip, QPolygonF &po
          {
              QLineF line_pol(polygon.at(i),
                              polygon.at(i+1 == len ? 0 : i+1));
-
-             QPointF *point1;
-             QPointF *point2;
-             QPointF *point_intersect = new QPointF;
 
              if (QLineF::BoundedIntersection
                      == lines_not_clip->at(j)->intersect(line_pol, point_intersect))
@@ -461,18 +460,20 @@ QVector<QLineF> *drawBezier(QVector2D &p0, QVector2D &p1, QVector2D &p2, QVector
     const char SEGMENT_COUNT = 9;
     QVector2D q0;
     QVector2D q1;
+    QVector2D p;
 
-    q0 = calcBezierPoint(0, p0, p1, p2, p3);
+    q0 = calcBezierPoint(0, p0, p1, p2, p3, p);
 
     for( float i = SEGMENT_COUNT; i >= 1; i -= 0.1f )
     {
         float t = 1 / i;
-        q1 = calcBezierPoint(t, p0, p1, p2, p3);
+        QVector2D p;
+        q1 = calcBezierPoint(t, p0, p1, p2, p3, p);
 
         if ( (q1-q0).length() >= 1 )
         {
-            QLineF line(QPointF(q0.x(), q0.y()),
-                        QPointF(q1.x(), q1.y()));
+            QLineF line(QPointF(static_cast<qreal>(q0.x()), static_cast<qreal>(q0.y())),
+                        QPointF(static_cast<qreal>(q1.x()), static_cast<qreal>(q1.y())));
 
             lines->append(line);
 
@@ -483,7 +484,12 @@ QVector<QLineF> *drawBezier(QVector2D &p0, QVector2D &p1, QVector2D &p2, QVector
     return lines;
 }
 
-QVector2D &calcBezierPoint(float t, QVector2D &p0, QVector2D &p1, QVector2D &p2, QVector2D &p3)
+QVector2D &calcBezierPoint(float t,
+                           QVector2D &p0,
+                           QVector2D &p1,
+                           QVector2D &p2,
+                           QVector2D &p3,
+                           QVector2D &p)
 {
     float    u = 1 - t,
              tt = t*t,
@@ -491,7 +497,7 @@ QVector2D &calcBezierPoint(float t, QVector2D &p0, QVector2D &p1, QVector2D &p2,
              uuu = uu * u,
              ttt = tt * t;
 
-    QVector2D p = uuu * p0;
+    p = uuu * p0;
     p += 3 * uu * t * p1;
     p += 3 * u * tt * p2;
     p += ttt* p3;

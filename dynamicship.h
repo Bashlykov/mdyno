@@ -3,7 +3,7 @@
 #include "idynamicobject.h"
 #include <vrouteship.h>
 #include <dynamicdron.h>
-
+#define EPS 1e-5
 
 class DynamicShip : public IDynamicObject
 {
@@ -26,40 +26,40 @@ class DynamicShip : public IDynamicObject
     struct steps_struct steps;
     int i_p;
     double prevAngle;
-    bool f_created_child;
-    int currentIdChild;
+   // bool f_created_child;
+   // int currentIdChild;
 
 public:
     DynamicShip(UIDType uid);
-    ~DynamicShip();
+    ~DynamicShip() override;
     void paint(QPainter *p, const QStyleOptionGraphicsItem *option,
-               QWidget *widget);
-    void advance(int step) Q_DECL_OVERRIDE;
+               QWidget *widget) override;
+    void advance(int step) override;
 
-    void setParentShape(IDynamicObject *){}
-    void setListThisObjects(QList<IDynamicObject*> *list);
-    QList<IDynamicObject*> *getListThisObjects();
-    void createChild(VArea *area);
-    IDynamicObject *getCurrentChild();
-    void setCurrentChild(IDynamicObject *currentChild);
-    QList<IDynamicObject *> *getListChild();
-    QList<IDynamicObject *> *getListChildFromNet(){return nullptr;}
-    void setVArea(VArea *area);
-    VArea *getVArea();
-    void calcRoute();
-    uint getCountChild();
+    void setParentShape(IDynamicObject *) override{}
+    void setListThisObjects(QList<IDynamicObject*> *list) override;
+    QList<IDynamicObject*> *getListThisObjects() override;
+    void createChild(VArea *area) override;
+    IDynamicObject *getCurrentChild() override;
+    void setCurrentChild(IDynamicObject *currentChild) override;
+    QList<IDynamicObject *> *getListChild() override;
+    QList<IDynamicObject *> *getListChildFromNet() override{return nullptr;}
+    void setVArea(VArea *area) override;
+    VArea *getVArea() override;
+    void calcRoute() override;
+    uint getCountChild() override;
 
-    VRoute* getRoute();
-    QList<VRoute*> *getListVRouteChild(){return nullptr;}
+    VRoute* getRoute() override;
+    QList<VRoute*> *getListVRouteChild() override { return nullptr;}
 
-    QByteArray serialize();
-    void deserialize(QByteArray &ba);
+    QByteArray serialize() override;
+    void deserialize(QByteArray &ba) override;
     friend QDataStream& operator>>( QDataStream& stream, DynamicShip& mapObj );
     friend QDataStream& operator<<( QDataStream& stream, DynamicShip& mapObj );
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *);
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *) override;
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 public slots:
     void removeThis(bool) override;

@@ -65,7 +65,7 @@ void VRouteDron::finish()
                                                 false,
                                                 Qt::yellow,
                                                 Qt::yellow,
-                                                i);
+                                                static_cast<int>(i));
 
         paintPointsRoute->append(newPoint);
         /// TODO newPoint->setPos(sx, sy);
@@ -89,7 +89,7 @@ void VRouteDron::msgWarning()
 {
     QString strMsg = "Невозможно построить маршрут!\n" + getMsgExcept();
     QMessageBox msg;
-    msg.warning(0, "Внимание!", strMsg);
+    msg.warning(dynamic_cast<QWidget*>(this), "Внимание!", strMsg);
 }
 
 void VRouteDron::setArea(VArea *varea)
@@ -136,7 +136,7 @@ void VRouteDron::remove()
         qDebug() << "exception" << exept.what();
         QString strMsg = "Exception! " + QString(exept.what());
         QMessageBox msg;
-        msg.warning(0, "Warning!", strMsg);
+        msg.warning(dynamic_cast<QWidget*>(this), "Warning!", strMsg);
     }
 }
 

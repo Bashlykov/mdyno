@@ -7,13 +7,13 @@ VPaintPolygon::VPaintPolygon(QVector<QPointF> *pointsPolygon,
                               qreal penWidth,
                               Qt::PenStyle penStyle,
                               QColor *colorPen):
+    prevVisibleState (true),
     color ( color),
     penWidth ( penWidth),
     penStyle ( penStyle),
-    pointsPolygon ( pointsPolygon),
-    poly( new QPolygonF(*pointsPolygon)),
     colorPen ( colorPen),
-    prevVisibleState (true)
+    poly( new QPolygonF(*pointsPolygon)),
+    pointsPolygon ( pointsPolygon)
 {
 
 }

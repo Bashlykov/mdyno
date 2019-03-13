@@ -3,6 +3,7 @@
 #include <QString>
 #include <QVector>
 #include <QTime>
+#include <math.h>
 
 typedef enum
 {
@@ -16,9 +17,9 @@ typedef quint64 UIDType;
 
 struct steps_struct
 {
-    QVector<qreal> x;
-    QVector<qreal> y;
-    QVector<long double> angle;
+    QVector<double> x;
+    QVector<double> y;
+    QVector<double> angle;
 };
 
 struct vect2D

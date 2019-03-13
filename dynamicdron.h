@@ -18,34 +18,34 @@ class DynamicDron : public IDynamicObject
 
 public:
     DynamicDron(UIDType uid);
-    ~DynamicDron();
+    ~DynamicDron() override;
     void paint(QPainter *p, const QStyleOptionGraphicsItem *option,
-               QWidget *widget);
+               QWidget *widget) override;
 
-    void setParentShape(IDynamicObject *parent);
-    void setListThisObjects(QList<IDynamicObject*> *){}
-    QList<IDynamicObject*> *getListThisObjects(){return nullptr;}
-    void createChild(VArea *){}
-    IDynamicObject *getCurrentChild(){return nullptr;}
-    void setCurrentChild(IDynamicObject *){}
-    QList<IDynamicObject *> *getListChild(){return nullptr;}
-    QList<IDynamicObject *> *getListChildFromNet(){return nullptr;}
-    void setVArea(VArea *area);
-    VArea *getVArea();
-    void calcRoute(){}
-    uint getCountChild(){return 0;}
+    void setParentShape(IDynamicObject *parent) override;
+    void setListThisObjects(QList<IDynamicObject*> *) override{}
+    QList<IDynamicObject*> *getListThisObjects() override{return nullptr;}
+    void createChild(VArea *) override{}
+    IDynamicObject *getCurrentChild() override{return nullptr;}
+    void setCurrentChild(IDynamicObject *) override{}
+    QList<IDynamicObject *> *getListChild() override{return nullptr;}
+    QList<IDynamicObject *> *getListChildFromNet() override{return nullptr;}
+    void setVArea(VArea *area) override;
+    VArea *getVArea() override;
+    void calcRoute() override{}
+    uint getCountChild() override{return 0;}
 
-    VRoute* getRoute(){return routeDron;}
-    QList<VRoute*> *getListVRouteChild(){return nullptr;}
+    VRoute* getRoute() override{return routeDron;}
+    QList<VRoute*> *getListVRouteChild() override{return nullptr;}
 
-    QByteArray serialize();
-    void deserialize(QByteArray &ba);
+    QByteArray serialize() override;
+    void deserialize(QByteArray &ba) override;
     friend QDataStream& operator>>( QDataStream& stream, DynamicDron& mapObj );
     friend QDataStream& operator<<( QDataStream& stream, DynamicDron& mapObj );
 
 protected:
-        void mousePressEvent(QGraphicsSceneMouseEvent *);
-        void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+        void mousePressEvent(QGraphicsSceneMouseEvent *) override;
+        void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 public slots:
         void triggeredSetupRouteAction() override;

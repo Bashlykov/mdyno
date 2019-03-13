@@ -27,11 +27,11 @@ class IDynamicObject : public QGraphicsObject
 public:
     IDynamicObject(){}
     IDynamicObject(UIDType uid);
-    ~IDynamicObject();
-    QRectF boundingRect() const Q_DECL_OVERRIDE;
-    QPainterPath shape() const Q_DECL_OVERRIDE;
+    ~IDynamicObject() override;
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
     void paint(QPainter *, const QStyleOptionGraphicsItem *option,
-               QWidget *widget) Q_DECL_OVERRIDE;
+               QWidget *widget) override;
 
     virtual void setParentShape(IDynamicObject *parent) = 0;
     virtual void setListThisObjects(QList<IDynamicObject*> *list) = 0;
@@ -52,7 +52,7 @@ public:
     virtual QList<VRoute*> *getListVRouteChild() = 0;
 
     void setPause();
-    void setUID(int uid);
+    void setUID(UIDType uid);
     UIDType getUID();
 
     void set_bound(QRectF _bound);
@@ -68,7 +68,7 @@ public:
     bool f_from_net;
 
 protected:
-    void advance(int);
+    void advance(int) override;
     QGraphicsScene* vScene;
     TypeObject type_object;
     UIDType uid;

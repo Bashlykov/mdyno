@@ -1,14 +1,15 @@
 #include "idynamicobject.h"
 
 IDynamicObject::IDynamicObject(UIDType id) :
-            uid(id),            
+
             f_end_route(false),
             f_route_created(false),
-            f_from_net(false)
+            f_from_net(false),
+            uid(id)
 {
 }
 
-void IDynamicObject::setUID(int uid)
+void IDynamicObject::setUID(UIDType uid)
 {
     this->uid = uid;
 }
@@ -41,18 +42,15 @@ void IDynamicObject::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget
 {
 }
 
-
 void IDynamicObject::advance(int)
 {
 
 }
 
-
 void IDynamicObject::setCoords(QPointF &p)
 {
     setPos(p);
 }
-
 
 void IDynamicObject::setPause()
 {

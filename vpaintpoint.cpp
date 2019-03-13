@@ -5,13 +5,13 @@ VPaintPoint::VPaintPoint(QRect size,
                           Qt::GlobalColor color,
                           Qt::GlobalColor penColor,
                           int num):
-    size(size),
+    num (num),
+    f_move (f_move),
     color(color),
     penColor(penColor),
     tmpColor(color),
     tmpPenColor (penColor),
-    num (num),
-    f_move (f_move)
+    size(size)
 {
     setFlag( QGraphicsItem::ItemIgnoresTransformations );
 
@@ -58,7 +58,6 @@ void VPaintPoint::paint(QPainter *p, const QStyleOptionGraphicsItem *, QWidget *
     QBrush mPointBrush(color);
     p->setBrush( mPointBrush );
     p->drawEllipse( size );
-    scene()->update(scene()->sceneRect());
 }
 
 void VPaintPoint::advance(int step)

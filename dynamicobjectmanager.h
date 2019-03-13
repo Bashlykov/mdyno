@@ -23,6 +23,8 @@ class DynamicObjectManager: public QObject
     QTimer *timer;
     bool f_createdShip;    
     bool f_startModeling;
+    bool f_enableEditArea;
+    bool f_enableEditRouteShip;
     int index_area;
 
     uint countShip;
@@ -30,9 +32,6 @@ class DynamicObjectManager: public QObject
     QList<VArea*> *listVArea;
     VArea* currentVarea;
     int type_point;
-
-    bool f_enableEditArea;
-    bool f_enableEditRouteShip;
 
     TypeObject object_select;
     Ui::ModelingDynamicObject *ui;
